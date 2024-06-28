@@ -1,5 +1,5 @@
 import random
-
+import os
 class Game:
     def __init__(self):
         self.rows = 0
@@ -16,10 +16,11 @@ class Game:
         self.cols = min(cols, 9)
         self.numbers = [num for num in range(1, (self.rows * self.cols) // 2 + 1)] * 2
         random.shuffle(self.numbers)
-        # print(self.numbers)
         self.print_full_pattern()
 
     def print_full_pattern(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        # print(self.numbers)
         for row in range(self.rows):
             self.print_pattern(row)
             print()
