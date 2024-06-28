@@ -11,12 +11,12 @@ class Game:
         self.moves = 0
         self.opened = set()
 
-    def initialise_board(self, rows = 5, cols = 5):
+    def initialise_board(self, rows = 4, cols = 4):
         self.rows = min(rows, 9)
         self.cols = min(cols, 9)
         self.numbers = [num for num in range(1, (self.rows * self.cols) // 2 + 1)] * 2
         random.shuffle(self.numbers)
-        print(self.numbers)
+        # print(self.numbers)
         self.print_full_pattern()
 
     def print_full_pattern(self):
@@ -26,32 +26,37 @@ class Game:
             print()
     
     def print_pattern(self, row):
-        # print("****** "*self.cols)
-        # print("****** "*self.cols)
+        print("******  "*self.cols)
+        print("|     | "*self.cols)
         idx = row * self.cols
         for _ in range(self.cols):
             if idx not in self.opened and self.first != idx and self.second != idx: 
-                print(str(idx+1).center(6, "*"), end = ' ')
+                print('|'+str(idx+1).center(5, " ")+'|', end = ' ')
             else:
-                print(str(self.numbers[idx]).center(6, '#'), end = ' ')
+                print('|'+str(self.numbers[idx]).center(5, '#')+'|', end = ' ')
             idx += 1
         print()
-        # print("****** "*self.cols)
-        # print("****** "*self.cols)
+        print("|     | "*self.cols)
+        print("******  "*self.cols)
     
     def take_input(self):
         while self.first == None or self.second == None:
             try:
                 print("Enter the card number to open")
-                inp = int(input())
+                inp = input()
+                if inp == 'q':
+                    return inp
+                inp = int(inp)
                 if inp > len(self.numbers) or inp <= 0:
                     print("Enter the numbers in range")
+                if inp-1 in self.opened:
+                    print("Don't open the matched pair")
                 else:
                     if self.first is None:
                         self.first = inp-1 
                         self.print_full_pattern()
                     else:
-                        if self.first != inp:
+                        if self.first != inp-1:
                             self.second = inp-1
                             self.print_full_pattern()
                         else:
@@ -62,13 +67,16 @@ class Game:
     
     def start_game(self):
         while True:
-            self.take_input()
+            inp = self.take_input()
+            if inp == 'q':
+                return 
             self.moves += 2
             if self.numbers[self.first] == self.numbers[self.second]:
                 self.opened.add(self.first)
                 self.opened.add(self.second)
                 if len(self.opened) == len(self.numbers):
                     print(f"Finished with {self.moves} moves")
+                    return True
                 else:
                     print("Nice work. You got a match")
                     self.first = None 
@@ -82,19 +90,3 @@ class Game:
 g = Game()
 g.initialise_board()
 g.start_game()
-
-            
-# def f(a=1, b=2, c=3):
-#     print("Hello")
-#     print(a,b,c)
-
-# def f1(*args, **kwargs):
-#     print(args)
-#     print(kwargs)
-#     kwargs['fn'](10)
-
-    
-
-# f(1,2,3)
-# f(10, b = 20, c=30)
-# f1(1,1000000,10000,1000,100,10, fn = f)
